@@ -29,8 +29,8 @@
     <Description>Roslyn analysers for enforcing architectural rules in C# projects</Description>
     <Copyright>Copyright (c) 2025 James Hughes</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/jameshughes89/archon</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/jameshughes89/archon</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/hughesjs/archon</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/hughesjs/archon</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>roslyn;analyser;architecture;rules;csharp</PackageTags>
