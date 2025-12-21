@@ -13,6 +13,6 @@ public class SampleAnalyzerTests
 		// to properly test Roslyn analysers
 
 		await Task.CompletedTask;
-		Assert.That(true, Is.EqualTo(true));
+		Assert.That(true);
 	}
 }
