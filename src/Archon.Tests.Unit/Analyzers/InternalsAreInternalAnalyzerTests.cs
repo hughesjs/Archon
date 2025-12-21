@@ -61,7 +61,7 @@ public class InternalsAreInternalAnalyzerTests
     }
 
     [Fact]
-    public async Task DiagnosticDoesntAppearsOnProtectedInternalClassNestedInsideInternalClass()
+    public async Task DiagnosticDoesntAppearOnProtectedInternalClassNestedInsideInternalClass()
     {
         const string testCode = """
                                 namespace TestApp.Internal;
@@ -111,7 +111,7 @@ public class InternalsAreInternalAnalyzerTests
     }
 
     [Fact]
-    public async Task DiagnosticDoesntAppearOnNestedPublicClass()
+    public async Task DiagnosticDoesntAppearOnShieldedNestedPublicClass()
     {
         const string testCode = """
                                 namespace TestApp.Internal;
@@ -197,7 +197,7 @@ public class InternalsAreInternalAnalyzerTests
     }
 
     [Fact]
-    public async Task DiagnosticDoesntAppearOnDoublyNestedPublicClass()
+    public async Task DiagnosticDoesntAppearOnPublicClassesNestedInsideInternalClass()
     {
         const string testCode = """
                                 namespace TestApp.Internal;
