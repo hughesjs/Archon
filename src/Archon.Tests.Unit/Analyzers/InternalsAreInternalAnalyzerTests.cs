@@ -195,4 +195,75 @@ public class InternalsAreInternalAnalyzerTests
         CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
         await test.RunAsync();
     }
+
+    [Fact]
+    public async Task DiagnosticDoesntAppearOnDoublyNestedPublicClass()
+    {
+        const string testCode = """
+                                namespace TestApp.Internal;
+                                internal class OuterClass
+                                {
+                                    public class MiddleClass
+                                    {
+                                        public class InnerClass;
+                                    }
+                                }
+                                """;
+        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync();
+    }
+
+    [Fact]
+    public async Task DiagnosticAppearsOnAllPublicClassChain()
+    {
+        const string testCode = $$"""
+                                namespace TestApp.Internal;
+                                {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} class OuterClass
+                                {
+                                    {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} class MiddleClass
+                                    {
+                                        {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} class InnerClass;
+                                    }
+                                }
+                                """;
+        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync();
+    }
+
+    [Fact]
+    public async Task DiagnosticAppearsOnPublicClassesInChainUntilMasked()
+    {
+        const string testCode = $$"""
+                                namespace TestApp.Internal;
+                                {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} class OutermostClass
+                                {
+                                    {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} class OuterClass
+                                    {
+                                        internal class MiddleClass
+                                        {
+                                            public class InnerClass;
+                                        }
+                                    }
+                                }
+                                """;
+        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync();
+    }
+
+    [Fact]
+    public async Task DiagnosticAppearsOnAllLevelsWhenProtectedInMiddle()
+    {
+        const string testCode = $$"""
+                                namespace TestApp.Internal;
+                                {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} class OuterClass
+                                {
+                                    {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:protected|} class MiddleClass
+                                    {
+                                        {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} class InnerClass;
+                                    }
+                                }
+                                """;
+        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync();
+    }
 }

@@ -36,7 +36,7 @@ public class InternalsAreInternalAnalyzer : DiagnosticAnalyzer
         context.RegisterSymbolAction(AnalyzeSymbol, SymbolKind.NamedType);
     }
 
-    private void AnalyzeSymbol(SymbolAnalysisContext obj)
+    private static void AnalyzeSymbol(SymbolAnalysisContext obj)
     {
         INamespaceSymbol? symbolNamespace = obj.Symbol.ContainingNamespace;
 
@@ -60,7 +60,7 @@ public class InternalsAreInternalAnalyzer : DiagnosticAnalyzer
         CreateDiagnosticForProblematicSymbol(symbol, obj);
     }
 
-    private void CreateDiagnosticForProblematicSymbol(ISymbol symbol, SymbolAnalysisContext obj)
+    private static void CreateDiagnosticForProblematicSymbol(ISymbol symbol, SymbolAnalysisContext obj)
     {
         SyntaxNode? syntaxNode = symbol.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax();
 
@@ -85,12 +85,29 @@ public class InternalsAreInternalAnalyzer : DiagnosticAnalyzer
         obj.ReportDiagnostic(diagnostic);
     }
 
-    private bool SymbolHasProblematicAccessibility(ISymbol symbol) => symbol.DeclaredAccessibility is  (Accessibility.Public or Accessibility.Protected or Accessibility.ProtectedOrInternal);
+    private static bool SymbolHasProblematicAccessibility(ISymbol symbol) => symbol.DeclaredAccessibility is  (Accessibility.Public or Accessibility.Protected or Accessibility.ProtectedOrInternal);
 
-    private bool SymbolIsMaskedByContainingType(ISymbol symbol) =>
-        symbol.ContainingType is not null && symbol.ContainingType.DeclaredAccessibility is not Accessibility.Public;
+    private static bool SymbolIsMaskedByContainingType(ISymbol symbol)
+    {
+        INamedTypeSymbol? parent = symbol.ContainingType;
 
-    private bool SymbolIsInIrrelevantNamespace(INamespaceSymbol? symbolNamespace) => symbolNamespace is null ||
-                                                                                     symbolNamespace.IsGlobalNamespace ||
-                                                                                     !symbolNamespace.ToDisplayString().Contains(InternalNamespaceSlug);
+        // Top level, unmasked
+        if (parent is null)
+        {
+            return false;
+        }
+
+        // Masked
+        if (parent.DeclaredAccessibility is Accessibility.Internal or Accessibility.Private or Accessibility.ProtectedAndInternal)
+        {
+            return true;
+        }
+
+        return SymbolIsMaskedByContainingType(parent);
+    }
+
+
+    private static bool SymbolIsInIrrelevantNamespace(INamespaceSymbol? symbolNamespace) => symbolNamespace is null ||
+                                                                                            symbolNamespace.IsGlobalNamespace ||
+                                                                                            !symbolNamespace.ToDisplayString().Contains(InternalNamespaceSlug);
 }
