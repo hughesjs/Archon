@@ -191,6 +191,7 @@ jobs:
           fromTag: ${{ env.newTag }}
           toTag: ${{ env.previousTag }}
           writeToFile: false
+          includeInvalidCommits: true
 
       - name: Download Archon Package
         uses: actions/download-artifact@v7
