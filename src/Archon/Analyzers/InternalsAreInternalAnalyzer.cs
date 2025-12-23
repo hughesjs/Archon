@@ -9,22 +9,21 @@ namespace Archon.Analyzers;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class InternalsAreInternalAnalyzer : DiagnosticAnalyzer
 {
-    public const string DIAGNOSTIC_ID = "ARCHON001";
-    private const string CATEGORY = "Architecture";
+    public const string DiagnosticId = "ARCHON001";
+    private const string Category = "Architecture";
 
-    private static readonly LocalizableString TITLE = "Types in internal namespaces should be internal or private";
-    private static readonly LocalizableString MESSAGE_FORMAT = "Type {0} should be internal or private due to being in namespace {1} but is {2}";
+    private static readonly LocalizableString Title = "Types in internal namespaces should be internal or private";
+    private static readonly LocalizableString MessageFormat = "Type {0} should be internal or private due to being in namespace {1} but is {2}";
 
-    private static readonly LocalizableString DESCRIPTION =
-        "This rule validates that all types in defined internal namespaces have either internal or private access modifiers, excluding compiler generated types";
+    private static readonly LocalizableString Description =
+        "This rule validates that all types in defined internal namespaces have either internal or private access modifiers, excluding compiler generated types.";
 
-    private static readonly DiagnosticDescriptor RULE = new(DIAGNOSTIC_ID, TITLE, MESSAGE_FORMAT, CATEGORY, DiagnosticSeverity.Error, isEnabledByDefault: true,
-        description: DESCRIPTION);
+    private static readonly DiagnosticDescriptor Rule = new(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true, description: Description);
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [RULE];
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
 
     // TODO - Grab this from config eventually
-    private const string INTERNAL_NAMESPACE_SLUG = "Internal";
+    private const string InternalNamespaceSlug = "Internal";
 
 
     public override void Initialize(AnalysisContext context)
@@ -87,7 +86,7 @@ public class InternalsAreInternalAnalyzer : DiagnosticAnalyzer
 
         Location location = problematicModifier.Value.GetLocation();
 
-        Diagnostic diagnostic = Diagnostic.Create(RULE, location, obj.Symbol.Name, obj.Symbol.ContainingNamespace.ToDisplayString(),
+        Diagnostic diagnostic = Diagnostic.Create(Rule, location, obj.Symbol.Name, obj.Symbol.ContainingNamespace.ToDisplayString(),
             obj.Symbol.DeclaredAccessibility.ToString());
         obj.ReportDiagnostic(diagnostic);
     }
@@ -116,5 +115,5 @@ public class InternalsAreInternalAnalyzer : DiagnosticAnalyzer
 
     private static bool SymbolIsInIrrelevantNamespace(INamespaceSymbol? symbolNamespace) => symbolNamespace is null
                                                                                              || symbolNamespace.IsGlobalNamespace
-                                                                                             || !Regex.IsMatch(symbolNamespace.ToDisplayString(), @$"^(?:\w+\.)*(?<Slug>{INTERNAL_NAMESPACE_SLUG})(?:\.\w+)*$");
+                                                                                             || !Regex.IsMatch(symbolNamespace.ToDisplayString(), @$"^(?:\w+\.)*(?<Slug>{InternalNamespaceSlug})(?:\.\w+)*$");
 }
