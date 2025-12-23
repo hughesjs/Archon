@@ -10,20 +10,20 @@ namespace Archon.Analyzers;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class PublicsArePublicAnalyzer : DiagnosticAnalyzer
 {
-	public const string DIAGNOSTIC_ID = "ARCHON002";
-	private const string CATEGORY = "Architecture";
+	public const string DiagnosticId = "ARCHON002";
+	private const string Category = "Architecture";
 
-	private static readonly LocalizableString TITLE = "Types in public namespaces should be public or protected";
-	private static readonly LocalizableString MESSAGE_FORMAT = "Type {0} should be public or protected due to being in namespace {1} but is {2}";
-	private static readonly LocalizableString DESCRIPTION =
+	private static readonly LocalizableString Title = "Types in public namespaces should be public or protected";
+	private static readonly LocalizableString MessageFormat = "Type {0} should be public or protected due to being in namespace {1} but is {2}";
+	private static readonly LocalizableString Description =
 		"This rule validates that all types in defined public namespaces have public, protected, or protected internal access modifiers";
 
-	private static readonly DiagnosticDescriptor RULE = new(DIAGNOSTIC_ID, TITLE, MESSAGE_FORMAT, CATEGORY, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: DESCRIPTION);
+	private static readonly DiagnosticDescriptor Rule = new(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
 
-	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [RULE];
+	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
 
 	// TODO - Grab this from config eventually
-	private const string PUBLIC_NAMESPACE_SLUG = "Public";
+	private const string PublicNamespaceSlug = "Public";
 
 
 	public override void Initialize(AnalysisContext context)
@@ -81,7 +81,7 @@ public class PublicsArePublicAnalyzer : DiagnosticAnalyzer
 
 		Location location = problematicModifier.Value.GetLocation();
 
-		Diagnostic diagnostic = Diagnostic.Create(RULE, location, context.Symbol.Name, context.Symbol.ContainingNamespace.ToDisplayString(),
+		Diagnostic diagnostic = Diagnostic.Create(Rule, location, context.Symbol.Name, context.Symbol.ContainingNamespace.ToDisplayString(),
 			context.Symbol.DeclaredAccessibility.ToString());
 		context.ReportDiagnostic(diagnostic);
 	}
@@ -95,5 +95,5 @@ public class PublicsArePublicAnalyzer : DiagnosticAnalyzer
 		symbolNamespace is null ||
 		symbolNamespace.IsGlobalNamespace ||
         !Regex.IsMatch(symbolNamespace.ToDisplayString(),
-            @$"^(?:\w+\.)*(?<Slug>{PUBLIC_NAMESPACE_SLUG})(?:\.\w+)*$");
+            @$"^(?:\w+\.)*(?<Slug>{PublicNamespaceSlug})(?:\.\w+)*$");
 }
