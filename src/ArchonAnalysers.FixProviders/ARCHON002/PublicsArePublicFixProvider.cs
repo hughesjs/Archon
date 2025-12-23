@@ -1,4 +1,8 @@
 using System.Collections.Immutable;
+using System.Composition;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using ArchonAnalysers.Analyzers.ARCHON002;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
@@ -8,6 +12,8 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ArchonAnalysers.FixProviders.ARCHON002;
 
+[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(PublicsArePublicFixProvider))]
+[Shared]
 public class PublicsArePublicFixProvider : CodeFixProvider
 {
     public override ImmutableArray<string> FixableDiagnosticIds => [PublicsArePublicAnalyzer.DiagnosticId];
@@ -57,7 +63,16 @@ public class PublicsArePublicFixProvider : CodeFixProvider
     private static MemberDeclarationSyntax RemoveTroublesomeModifiers(MemberDeclarationSyntax declarationSyntax)
     {
         SyntaxTokenList validTokens = new(declarationSyntax.Modifiers.Where(m => !m.IsKind(SyntaxKind.InternalKeyword) && !m.IsKind(SyntaxKind.PrivateKeyword) && !m.IsKind(SyntaxKind.PublicKeyword)));
-        validTokens = validTokens.Add(SyntaxFactory.Token(SyntaxKind.PublicKeyword).WithTriviaFrom(declarationSyntax.Modifiers.First()));
+
+        // Safely get trivia from first modifier, or fall back to declaration's leading trivia
+        SyntaxToken? firstModifier = declarationSyntax.Modifiers.FirstOrDefault();
+        SyntaxToken publicToken = firstModifier.HasValue
+            ? SyntaxFactory.Token(SyntaxKind.PublicKeyword).WithTriviaFrom(firstModifier.Value)
+            : SyntaxFactory.Token(declarationSyntax.GetLeadingTrivia(), SyntaxKind.PublicKeyword, SyntaxFactory.TriviaList(SyntaxFactory.Space));
+
+        // Insert public at the start for conventional modifier ordering
+        validTokens = validTokens.Insert(0, publicToken);
+
         MemberDeclarationSyntax newNode = declarationSyntax.WithModifiers(validTokens);
         return newNode;
     }

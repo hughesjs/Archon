@@ -71,7 +71,7 @@ public class PublicsArePublicFixProviderTests
 
         string fixedCode = $$"""
                              namespace TestApp.Public;
-                             {{additionalModifiers}} public {{typeDeclaration}} MyType;
+                             public {{additionalModifiers}} {{typeDeclaration}} MyType;
                              """;
 
         CSharpCodeFixTest<PublicsArePublicAnalyzer, PublicsArePublicFixProvider, DefaultVerifier> test = new()

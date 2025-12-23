@@ -103,7 +103,7 @@ public class InternalsAreInternalFixProviderTests
 
         string fixedCode = $$"""
                              namespace TestApp.Internal;
-                             {{additionalModifiers}} internal {{typeDeclaration}} MyType;
+                             internal {{additionalModifiers}} {{typeDeclaration}} MyType;
                              """;
 
         CSharpCodeFixTest<InternalsAreInternalAnalyzer, InternalsAreInternalFixProvider, DefaultVerifier> test = new()

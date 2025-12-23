@@ -1,4 +1,8 @@
 using System.Collections.Immutable;
+using System.Composition;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using ArchonAnalysers.Analyzers.ARCHON001;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
@@ -8,6 +12,8 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ArchonAnalysers.FixProviders.ARCHON001;
 
+[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(InternalsAreInternalFixProvider))]
+[Shared]
 public class InternalsAreInternalFixProvider : CodeFixProvider
 {
     public override ImmutableArray<string> FixableDiagnosticIds => [InternalsAreInternalAnalyzer.DiagnosticId];
@@ -56,8 +62,17 @@ public class InternalsAreInternalFixProvider : CodeFixProvider
 
     private static MemberDeclarationSyntax RemoveTroublesomeSiblings(MemberDeclarationSyntax declarationSyntax)
     {
-        SyntaxTokenList validTokens = new(declarationSyntax.Modifiers.Where(m => !m.IsKind(SyntaxKind.PublicKeyword)  && !m.IsKind(SyntaxKind.ProtectedKeyword) && !m.IsKind(SyntaxKind.InternalKeyword)));
-        validTokens = validTokens.Add(SyntaxFactory.Token(SyntaxKind.InternalKeyword).WithTriviaFrom(declarationSyntax.Modifiers.First()));
+        SyntaxTokenList validTokens = new(declarationSyntax.Modifiers.Where(m => !m.IsKind(SyntaxKind.PublicKeyword) && !m.IsKind(SyntaxKind.ProtectedKeyword) && !m.IsKind(SyntaxKind.InternalKeyword)));
+
+        // Safely get trivia from first modifier, or fall back to declaration's leading trivia
+        SyntaxToken? firstModifier = declarationSyntax.Modifiers.FirstOrDefault();
+        SyntaxToken internalToken = firstModifier.HasValue
+            ? SyntaxFactory.Token(SyntaxKind.InternalKeyword).WithTriviaFrom(firstModifier.Value)
+            : SyntaxFactory.Token(declarationSyntax.GetLeadingTrivia(), SyntaxKind.InternalKeyword, SyntaxFactory.TriviaList(SyntaxFactory.Space));
+
+        // Insert internal at the start for conventional modifier ordering
+        validTokens = validTokens.Insert(0, internalToken);
+
         MemberDeclarationSyntax newNode = declarationSyntax.WithModifiers(validTokens);
         return newNode;
     }
