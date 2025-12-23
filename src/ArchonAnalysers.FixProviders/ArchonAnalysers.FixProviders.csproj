@@ -7,12 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.CodeAnalysis.CodeFix.Testing" Version="1.1.2" />
-      <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.0.0" />
+      <ProjectReference Include="..\ArchonAnalysers\ArchonAnalysers.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ArchonAnalysers\ArchonAnalysers.csproj" />
+      <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.0.0" />
     </ItemGroup>
 
 </Project>

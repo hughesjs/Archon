@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ArchonAnalysers.FixProviders.ARCHON001;
 
@@ -20,7 +21,7 @@ public class InternalsAreInternalFixProvider : CodeFixProvider
             return Task.CompletedTask;
         }
 
-        CodeAction action = CodeAction.Create("Make Type Internal", ct => CreateChangedDocument(context, ct), diagnostic.Id);
+        CodeAction action = CodeAction.Create("Make Type Internal", ct => CreateChangedDocument(context, ct), diagnostic.Id + ":" + diagnostic.Location.SourceSpan);
         context.RegisterCodeFix(action, diagnostic);
 
         return Task.CompletedTask;
@@ -38,15 +39,28 @@ public class InternalsAreInternalFixProvider : CodeFixProvider
 
         SyntaxToken troublesomeToken = syntaxRoot.FindToken(context.Span.Start);
 
-        SyntaxToken internalTokenWithTrivia = GetTokenToReplace(troublesomeToken);
 
-        SyntaxNode newTree = syntaxRoot.ReplaceToken(troublesomeToken, internalTokenWithTrivia);
+        SyntaxNode? parent = troublesomeToken.Parent;
 
-        return context.Document.WithSyntaxRoot(newTree);
+        if (parent is not MemberDeclarationSyntax memberDeclarationSyntax)
+        {
+            return context.Document;
+        }
+
+        SyntaxNode newNode = RemoveTroublesomeSiblings(memberDeclarationSyntax);
+        SyntaxNode newRoot = syntaxRoot.ReplaceNode(parent, newNode);
+        Document newDocument = context.Document.WithSyntaxRoot(newRoot);
+
+        return newDocument;
     }
 
-    private static SyntaxToken GetTokenToReplace(SyntaxToken troublesomeToken) =>
-        SyntaxFactory.Token(SyntaxKind.InternalKeyword)
-            .WithLeadingTrivia(troublesomeToken.LeadingTrivia)
-            .WithTrailingTrivia(troublesomeToken.TrailingTrivia);
+    private static MemberDeclarationSyntax RemoveTroublesomeSiblings(MemberDeclarationSyntax declarationSyntax)
+    {
+        SyntaxTokenList validTokens = new(declarationSyntax.Modifiers.Where(m => !m.IsKind(SyntaxKind.PublicKeyword)  && !m.IsKind(SyntaxKind.ProtectedKeyword) && !m.IsKind(SyntaxKind.InternalKeyword)));
+        validTokens = validTokens.Add(SyntaxFactory.Token(SyntaxKind.InternalKeyword).WithTriviaFrom(declarationSyntax.Modifiers.First()));
+        MemberDeclarationSyntax newNode = declarationSyntax.WithModifiers(validTokens);
+        return newNode;
+    }
+
+
 }

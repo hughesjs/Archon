@@ -11,6 +11,7 @@
 
   <!-- Test Framework -->
   <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CodeFix.Testing" Version="1.1.2" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" Version="1.1.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageReference Include="xunit.v3" Version="3.2.1" />
