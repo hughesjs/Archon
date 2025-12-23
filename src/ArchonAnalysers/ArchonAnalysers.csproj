@@ -59,4 +59,17 @@
     <None Include="$(OutputPath)$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
   </ItemGroup>
 
+  <!-- Custom Target: Include FixProviders DLL in NuGet Package -->
+  <Target Name="IncludeFixProvidersInPackage" AfterTargets="Build" BeforeTargets="_GetPackageFiles">
+    <ItemGroup>
+      <!-- Include FixProviders DLL from its build output directory -->
+      <None Include="..\ArchonAnalysers.FixProviders\bin\$(Configuration)\netstandard2.0\ArchonAnalysers.FixProviders.dll"
+            Pack="true"
+            PackagePath="analyzers/dotnet/cs"
+            Visible="false"
+            Condition="Exists('..\ArchonAnalysers.FixProviders\bin\$(Configuration)\netstandard2.0\ArchonAnalysers.FixProviders.dll')" />
+    </ItemGroup>
+    <Message Text="Including FixProviders DLL in package from: ..\ArchonAnalysers.FixProviders\bin\$(Configuration)\netstandard2.0\ArchonAnalysers.FixProviders.dll" Importance="high" />
+  </Target>
+
 </Project>
