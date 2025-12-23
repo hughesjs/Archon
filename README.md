@@ -1,10 +1,10 @@
 # ArchonAnalysers
 
-[![CI Pipeline](https://img.shields.io/github/actions/workflow/status/hughesjs/archon/ci-pipeline.yml?style=for-the-badge&logo=github)](https://github.com/hughesjs/archon/actions/workflows/ci-pipeline.yml)
-[![CD Pipeline](https://img.shields.io/github/actions/workflow/status/hughesjs/archon/cd-pipeline.yml?style=for-the-badge&logo=github)](https://github.com/hughesjs/archon/actions/workflows/cd-pipeline.yml)
+[![CI Pipeline](https://img.shields.io/github/actions/workflow/status/hughesjs/ArchonAnalysers/ci-pipeline.yml?style=for-the-badge&logo=github)](https://github.com/hughesjs/ArchonAnalysers/actions/workflows/ci-pipeline.yml)
+[![CD Pipeline](https://img.shields.io/github/actions/workflow/status/hughesjs/ArchonAnalysers/cd-pipeline.yml?style=for-the-badge&logo=github)](https://github.com/hughesjs/ArchonAnalysers/actions/workflows/cd-pipeline.yml)
 [![NuGet](https://img.shields.io/nuget/v/ArchonAnalysers?style=for-the-badge&logo=nuget)](https://www.nuget.org/packages/ArchonAnalysers/)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/ArchonAnalysers?style=for-the-badge)](https://www.nuget.org/packages/ArchonAnalysers/)
-[![License](https://img.shields.io/github/license/hughesjs/archon?style=for-the-badge)](https://github.com/hughesjs/archon/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/hughesjs/ArchonAnalysers?style=for-the-badge)](https://github.com/hughesjs/ArchonAnalysers/blob/master/LICENSE)
 [![Made in Scotland](https://raw.githubusercontent.com/hughesjs/custom-badges/master/made-in/made-in-scotland.svg)](https://github.com/hughesjs/custom-badges)
 
 Roslyn analysers for enforcing architectural rules in C# projects.
