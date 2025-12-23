@@ -9,7 +9,7 @@ namespace ArchonAnalysers.Tests.Unit.Analyzers.ARCHON001;
 public class InternalsAreInternalFixProviderTests
 {
     [Fact]
-    public async Task SwapsPublicModifierToInternal()
+    public async Task SwapsPublicModifierToInternalOnPublicClass()
     {
         const string testCode = $$"""
                                   namespace TestApp.Internal;
@@ -18,7 +18,7 @@ public class InternalsAreInternalFixProviderTests
 
         const string fixedCode = """
                                  namespace TestApp.Internal;
-                                 internal|} class MyClass;
+                                 internal class MyClass;
                                  """;
 
 
@@ -27,4 +27,26 @@ public class InternalsAreInternalFixProviderTests
 
         await test.RunAsync(TestContext.Current.CancellationToken);
     }
+
+    [Fact]
+    public async Task FixChangesPublicDelegateToInternal()
+    {
+        const string testCode = $$"""
+                                  namespace TestApp.Internal;
+                                  {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} delegate void MyDelegate();
+                                  """;
+
+        const string fixedCode = """
+                                 namespace TestApp.Internal;
+                                 internal delegate void MyDelegate();
+                                 """;
+
+        CSharpCodeFixTest<InternalsAreInternalAnalyzer, InternalsAreInternalFixProvider, DefaultVerifier> test = new()
+        {
+            TestCode = testCode,
+            FixedCode = fixedCode
+        };
+        await test.RunAsync(TestContext.Current.CancellationToken);
+    }
 }
+
