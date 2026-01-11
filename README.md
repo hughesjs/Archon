@@ -37,6 +37,15 @@ Ensures that top-level types within namespaces containing `.Public` are appropri
 - **Required Modifiers**: `public`, `protected`, `protected internal`
 - **Scope**: Only applies to top-level types (nested types are exempt)
 
+### ARCHON003: Forbidden Assembly References
+
+Prevents specified projects from referencing forbidden assemblies at compile time, enforcing architectural layering rules.
+
+- **Severity**: Error
+- **Configuration**: `archon_003.forbidden_references` (directional rules: `Source->Target`)
+- **Matching**: Simple assembly name, case-insensitive, .dll extension optional
+- **Scope**: Global configuration in single EditorConfig
+
 ## Usage
 
 Once installed, the analysers will automatically run during compilation and highlight violations in your IDE.
@@ -79,6 +88,39 @@ Top-level types in namespaces matching `*.Public.*`, `*.Api.*`, `*.Exposed.*`, o
 - Slugs match complete namespace segments (e.g., "Internal" matches `App.Internal.Services` but not `App.InternalStuff`)
 - Special regex characters are automatically escaped
 
+#### ARCHON003: Forbidden Assembly References
+
+Configure directional rules in a **single global EditorConfig** file:
+
+```editorconfig
+# Single global .editorconfig at solution root
+[*.cs]
+archon_003.forbidden_references = Contracts->Domain, Contracts->Application, Domain->Application
+```
+
+This enforces:
+- Contracts → Domain: ❌ Forbidden
+- Contracts → Application: ❌ Forbidden
+- Domain → Application: ❌ Forbidden
+- Domain → Contracts: ✅ Allowed
+- Application → Domain: ✅ Allowed
+- Application → Contracts: ✅ Allowed
+
+##### Syntax
+
+**Directional format:**
+```editorconfig
+archon_003.forbidden_references = Source->Target, AnotherSource->AnotherTarget
+```
+
+**Notes:**
+- Assembly names are matched without version, culture, or public key token
+- Matching is case-insensitive for both source and target
+- The `.dll` extension is optional in configuration
+- Whitespace around `->` is automatically trimmed
+- Empty or missing configuration means no restrictions
+- Rules must use the `Source->Target` format
+
 ### Severity Configuration
 
 Configure severity levels in your `.editorconfig`:
@@ -90,9 +132,14 @@ dotnet_diagnostic.ARCHON001.severity = error
 
 # Enforce public types in configured namespaces (default: warning)
 dotnet_diagnostic.ARCHON002.severity = warning
+
+# Enforce forbidden assembly references (default: error)
+dotnet_diagnostic.ARCHON003.severity = error
 ```
 
 ### Example
+
+#### Namespace Rules (ARCHON001 & ARCHON002)
 
 ```csharp
 namespace MyApp.Internal
