@@ -5,17 +5,17 @@ using Xunit;
 
 namespace ArchonAnalysers.Tests.Unit.Analyzers.ARCHON001;
 
-public class InternalsAreInternalAnalyzerTests
+public class InternalsAreInternalAnalyserTests
 {
     [Fact]
     public async Task DiagnosticAppearsOnPublicClass()
     {
         const string testCode = $$"""
                                   namespace TestApp.Internal;
-                                  {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} class MyClass;
+                                  {|{{InternalsAreInternalAnalyser.DiagnosticId}}:public|} class MyClass;
                                   """;
-        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        CSharpAnalyzerTest<InternalsAreInternalAnalyser, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -23,13 +23,13 @@ public class InternalsAreInternalAnalyzerTests
     {
         const string testCode = $$"""
                                   namespace TestApp.Internal;
-                                  {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} class OuterClass
+                                  {|{{InternalsAreInternalAnalyser.DiagnosticId}}:public|} class OuterClass
                                   {
-                                        {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:protected|} class MyClass;
+                                        {|{{InternalsAreInternalAnalyser.DiagnosticId}}:protected|} class MyClass;
                                   }
                                   """;
-        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        CSharpAnalyzerTest<InternalsAreInternalAnalyser, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -37,13 +37,13 @@ public class InternalsAreInternalAnalyzerTests
     {
         const string testCode = $$"""
                                   namespace TestApp.Internal;
-                                  {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} class OuterClass
+                                  {|{{InternalsAreInternalAnalyser.DiagnosticId}}:public|} class OuterClass
                                   {
                                     internal class MyClass;
                                   }
                                   """;
-        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        CSharpAnalyzerTest<InternalsAreInternalAnalyser, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -56,8 +56,8 @@ public class InternalsAreInternalAnalyzerTests
                                       protected class MyClass;
                                 }
                                 """;
-        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        CSharpAnalyzerTest<InternalsAreInternalAnalyser, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -70,8 +70,8 @@ public class InternalsAreInternalAnalyzerTests
                                     protected internal class MyClass;
                                 }
                                 """;
-        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        CSharpAnalyzerTest<InternalsAreInternalAnalyser, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -81,8 +81,8 @@ public class InternalsAreInternalAnalyzerTests
                                 namespace TestApp.Public;
                                 public class MyClass;
                                 """;
-        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        CSharpAnalyzerTest<InternalsAreInternalAnalyser, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -90,13 +90,13 @@ public class InternalsAreInternalAnalyzerTests
     {
         const string testCode = $$"""
                                   namespace TestApp.Internal;
-                                  {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} class OuterClass
+                                  {|{{InternalsAreInternalAnalyser.DiagnosticId}}:public|} class OuterClass
                                   {
-                                      {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:protected|} internal class MyClass;
+                                      {|{{InternalsAreInternalAnalyser.DiagnosticId}}:protected|} internal class MyClass;
                                   }
                                   """;
-        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        CSharpAnalyzerTest<InternalsAreInternalAnalyser, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -106,8 +106,8 @@ public class InternalsAreInternalAnalyzerTests
                                 namespace TestApp.Internal;
                                 internal class MyClass;
                                 """;
-        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        CSharpAnalyzerTest<InternalsAreInternalAnalyser, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -120,8 +120,8 @@ public class InternalsAreInternalAnalyzerTests
                                     public class MyClass;
                                 }
                                 """;
-        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        CSharpAnalyzerTest<InternalsAreInternalAnalyser, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -129,13 +129,13 @@ public class InternalsAreInternalAnalyzerTests
     {
         const string testCode = $$"""
                                 namespace TestApp.Internal;
-                                {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} class OuterClass
+                                {|{{InternalsAreInternalAnalyser.DiagnosticId}}:public|} class OuterClass
                                 {
                                     private class MyClass;
                                 }
                                 """;
-        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        CSharpAnalyzerTest<InternalsAreInternalAnalyser, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -143,13 +143,13 @@ public class InternalsAreInternalAnalyzerTests
     {
         const string testCode = $$"""
                                 namespace TestApp.Internal;
-                                {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} class OuterClass
+                                {|{{InternalsAreInternalAnalyser.DiagnosticId}}:public|} class OuterClass
                                 {
                                     private protected class MyClass;
                                 }
                                 """;
-        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        CSharpAnalyzerTest<InternalsAreInternalAnalyser, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -157,10 +157,10 @@ public class InternalsAreInternalAnalyzerTests
     {
         const string testCode = $$"""
                                   namespace TestApp.Internal;
-                                  {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} record MyRecord;
+                                  {|{{InternalsAreInternalAnalyser.DiagnosticId}}:public|} record MyRecord;
                                   """;
-        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        CSharpAnalyzerTest<InternalsAreInternalAnalyser, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -168,10 +168,10 @@ public class InternalsAreInternalAnalyzerTests
     {
         const string testCode = $$"""
                                   namespace TestApp.Internal;
-                                  {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} struct MyStruct;
+                                  {|{{InternalsAreInternalAnalyser.DiagnosticId}}:public|} struct MyStruct;
                                   """;
-        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        CSharpAnalyzerTest<InternalsAreInternalAnalyser, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -179,10 +179,10 @@ public class InternalsAreInternalAnalyzerTests
     {
         const string testCode = $$"""
                                   namespace TestApp.Internal;
-                                  {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} interface IMyInterface;
+                                  {|{{InternalsAreInternalAnalyser.DiagnosticId}}:public|} interface IMyInterface;
                                   """;
-        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        CSharpAnalyzerTest<InternalsAreInternalAnalyser, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -190,10 +190,10 @@ public class InternalsAreInternalAnalyzerTests
     {
         const string testCode = $$"""
                                   namespace TestApp.Internal;
-                                  {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} enum MyEnum;
+                                  {|{{InternalsAreInternalAnalyser.DiagnosticId}}:public|} enum MyEnum;
                                   """;
-        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        CSharpAnalyzerTest<InternalsAreInternalAnalyser, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -209,8 +209,8 @@ public class InternalsAreInternalAnalyzerTests
                                     }
                                 }
                                 """;
-        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        CSharpAnalyzerTest<InternalsAreInternalAnalyser, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -218,16 +218,16 @@ public class InternalsAreInternalAnalyzerTests
     {
         const string testCode = $$"""
                                 namespace TestApp.Internal;
-                                {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} class OuterClass
+                                {|{{InternalsAreInternalAnalyser.DiagnosticId}}:public|} class OuterClass
                                 {
-                                    {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} class MiddleClass
+                                    {|{{InternalsAreInternalAnalyser.DiagnosticId}}:public|} class MiddleClass
                                     {
-                                        {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} class InnerClass;
+                                        {|{{InternalsAreInternalAnalyser.DiagnosticId}}:public|} class InnerClass;
                                     }
                                 }
                                 """;
-        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        CSharpAnalyzerTest<InternalsAreInternalAnalyser, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -235,9 +235,9 @@ public class InternalsAreInternalAnalyzerTests
     {
         const string testCode = $$"""
                                 namespace TestApp.Internal;
-                                {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} class OutermostClass
+                                {|{{InternalsAreInternalAnalyser.DiagnosticId}}:public|} class OutermostClass
                                 {
-                                    {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} class OuterClass
+                                    {|{{InternalsAreInternalAnalyser.DiagnosticId}}:public|} class OuterClass
                                     {
                                         internal class MiddleClass
                                         {
@@ -246,8 +246,8 @@ public class InternalsAreInternalAnalyzerTests
                                     }
                                 }
                                 """;
-        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        CSharpAnalyzerTest<InternalsAreInternalAnalyser, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -255,16 +255,16 @@ public class InternalsAreInternalAnalyzerTests
     {
         const string testCode = $$"""
                                 namespace TestApp.Internal;
-                                {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} class OuterClass
+                                {|{{InternalsAreInternalAnalyser.DiagnosticId}}:public|} class OuterClass
                                 {
-                                    {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:protected|} class MiddleClass
+                                    {|{{InternalsAreInternalAnalyser.DiagnosticId}}:protected|} class MiddleClass
                                     {
-                                        {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} class InnerClass;
+                                        {|{{InternalsAreInternalAnalyser.DiagnosticId}}:public|} class InnerClass;
                                     }
                                 }
                                 """;
-        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        CSharpAnalyzerTest<InternalsAreInternalAnalyser, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -272,10 +272,10 @@ public class InternalsAreInternalAnalyzerTests
     {
         const string testCode = $$"""
                                   namespace TestApp.Internal.SubNamespace;
-                                  {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} class MyClass;
+                                  {|{{InternalsAreInternalAnalyser.DiagnosticId}}:public|} class MyClass;
                                   """;
-        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        CSharpAnalyzerTest<InternalsAreInternalAnalyser, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -283,10 +283,10 @@ public class InternalsAreInternalAnalyzerTests
     {
         const string testCode = $$"""
                                   namespace TestApp.Internal;
-                                  {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} delegate void MyDelegate();
+                                  {|{{InternalsAreInternalAnalyser.DiagnosticId}}:public|} delegate void MyDelegate();
                                   """;
-        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        CSharpAnalyzerTest<InternalsAreInternalAnalyser, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -296,8 +296,8 @@ public class InternalsAreInternalAnalyzerTests
                                 namespace TestApp.Internal;
                                 internal delegate void MyDelegate();
                                 """;
-        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        CSharpAnalyzerTest<InternalsAreInternalAnalyser, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -305,10 +305,10 @@ public class InternalsAreInternalAnalyzerTests
     {
         const string testCode = $$"""
                                   namespace TestApp.Internal;
-                                  {|{{InternalsAreInternalAnalyzer.DiagnosticId}}:public|} class MyClass<T>;
+                                  {|{{InternalsAreInternalAnalyser.DiagnosticId}}:public|} class MyClass<T>;
                                   """;
-        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        CSharpAnalyzerTest<InternalsAreInternalAnalyser, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -318,8 +318,8 @@ public class InternalsAreInternalAnalyzerTests
                                 namespace TestApp.Internal;
                                 internal class MyClass<T>;
                                 """;
-        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        CSharpAnalyzerTest<InternalsAreInternalAnalyser, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -329,7 +329,7 @@ public class InternalsAreInternalAnalyzerTests
                                 namespace TestApp.Public.InternalStuff;
                                 public class MyClass;
                                 """;
-        CSharpAnalyzerTest<InternalsAreInternalAnalyzer, DefaultVerifier> test = new() { TestCode = testCode };
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        CSharpAnalyzerTest<InternalsAreInternalAnalyser, DefaultVerifier> test = new() { TestCode = testCode };
+        await test.RunAsync(CancellationToken.None);
     }
 }
